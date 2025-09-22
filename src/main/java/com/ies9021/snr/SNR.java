@@ -1,9 +1,12 @@
-
 package com.ies9021.snr;
 
-public class SNR {
+import com.ies9021.snr.view.SNRFrameAlegation;
 
+public class SNR {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        SNRFrameAlegation frame = new SNRFrameAlegation();
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
+
     }
 }
