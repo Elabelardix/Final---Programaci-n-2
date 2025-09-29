@@ -2,14 +2,49 @@ package com.ies9021.snr.view;
 
 import com.ies9021.snr.Allegation;
 import com.ies9021.snr.controller.AllegationController;
-import javax.swing.JOptionPane;
+import com.ies9021.snr.config.DbConnection;
 
-public class SNRCrearAlegation extends javax.swing.JFrame {
+import javax.swing.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-    AllegationController controller = new AllegationController();
+public class SNRCrearAlegation extends JFrame {
+
+    private AllegationController controller;
+
     public SNRCrearAlegation() {
         initComponents();
+        controller = new AllegationController();
+        cargarClaims();
+        cargarEntidades();
     }
+
+    private void cargarClaims() {
+        cbCargarReclamo.removeAllItems();
+        String sql = "SELECT id_claim, description FROM claim";
+
+        try (Connection conn = DbConnection.getConnection(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+
+            while (rs.next()) {
+                int idClaim = rs.getInt("id_claim");
+                String desc = rs.getString("description");
+                cbCargarReclamo.addItem(idClaim + " - " + desc);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "⚠️ Error al cargar reclamos: " + e.getMessage());
+        }
+    }
+
+    private void cargarEntidades() {
+        cbEntidadDenunciada.removeAllItems();
+        for (String entidad : controller.listarEntidades()) {
+            cbEntidadDenunciada.addItem(entidad);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -19,36 +54,29 @@ public class SNRCrearAlegation extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtMotivo = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        txtInformante = new javax.swing.JTextArea();
-        txtCategoria = new javax.swing.JComboBox<>();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        txtDenunciado = new javax.swing.JTextArea();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        txtEspecificaciones = new javax.swing.JTextArea();
+        txtAllegación = new javax.swing.JTextArea();
         btnCargar = new javax.swing.JButton();
         btnCancelarAlegacion = new javax.swing.JButton();
+        cbCargarReclamo = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        cbEntidadDenunciada = new javax.swing.JComboBox<>();
+        cbCategoríaAllegación = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Emoji", 2, 18)); // NOI18N
-        jLabel1.setText("Motivo");
+        jLabel1.setText("Reclamo pendiente");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI Emoji", 2, 18)); // NOI18N
-        jLabel2.setText("Informante");
+        jLabel2.setText("Allegación");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI Emoji", 2, 18)); // NOI18N
-        jLabel3.setText("Denunciado");
+        jLabel3.setText("Entidad Denunciada");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI Emoji", 2, 18)); // NOI18N
-        jLabel4.setText("Specificaciones");
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI Emoji", 2, 18)); // NOI18N
-        jLabel7.setText("Categoría");
+        jLabel4.setText("Categoría");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -57,52 +85,32 @@ public class SNRCrearAlegation extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(36, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 30, Short.MAX_VALUE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(jLabel1)
-                .addGap(30, 30, 30)
+                .addGap(41, 41, 41)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
-                .addComponent(jLabel7)
-                .addGap(43, 43, 43)
+                .addGap(46, 46, 46)
                 .addComponent(jLabel3)
-                .addGap(38, 38, 38)
+                .addGap(44, 44, 44)
                 .addComponent(jLabel4)
-                .addGap(104, 104, 104))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        txtMotivo.setColumns(20);
-        txtMotivo.setRows(5);
-        jScrollPane1.setViewportView(txtMotivo);
-
-        txtInformante.setColumns(20);
-        txtInformante.setRows(5);
-        jScrollPane2.setViewportView(txtInformante);
-
-        txtCategoria.setFont(new java.awt.Font("Segoe UI Emoji", 2, 14)); // NOI18N
-        txtCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Falta de mantenimiento", "Deficiencia en la señalización", "Problemas de accesibilidad", "Condiciones de higiene y limpieza", "Fallas en iluminación y seguridad", "Organización deficiente del servicio", "Demoras o tiempos de espera excesivos", "Escasez de recursos o equipamiento", "Riesgos para la salud y seguridad", "Falta de personal capacitado", "Incumplimiento de normativas", " " }));
-        txtCategoria.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCategoriaActionPerformed(evt);
-            }
-        });
-
-        txtDenunciado.setColumns(20);
-        txtDenunciado.setRows(5);
-        jScrollPane4.setViewportView(txtDenunciado);
-
-        txtEspecificaciones.setColumns(20);
-        txtEspecificaciones.setRows(5);
-        jScrollPane5.setViewportView(txtEspecificaciones);
+        txtAllegación.setColumns(20);
+        txtAllegación.setRows(5);
+        jScrollPane2.setViewportView(txtAllegación);
 
         btnCargar.setFont(new java.awt.Font("Segoe UI Emoji", 2, 18)); // NOI18N
         btnCargar.setText("Cargar Alegation");
@@ -122,6 +130,35 @@ public class SNRCrearAlegation extends javax.swing.JFrame {
             }
         });
 
+        cbCargarReclamo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbCargarReclamoActionPerformed(evt);
+            }
+        });
+
+        jButton1.setFont(new java.awt.Font("Segoe UI Emoji", 2, 18)); // NOI18N
+        jButton1.setText("Finalizar");
+        jButton1.setActionCommand("Salir");
+        jButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        cbEntidadDenunciada.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbEntidadDenunciadaActionPerformed(evt);
+            }
+        });
+
+        cbCategoríaAllegación.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Error en el servicio", "Retraso en la entrega", "Producto defectuoso", "Cobro indebido", "Atención al cliente inadecuada", "Documentación incompleta", "Duplicado de reclamo", "Fraude o intento de fraude", "Otro" }));
+        cbCategoríaAllegación.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbCategoríaAllegaciónActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -129,35 +166,40 @@ public class SNRCrearAlegation extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnCancelarAlegacion)
-                        .addGap(57, 57, 57)
-                        .addComponent(btnCargar)))
+                        .addGap(58, 58, 58)
+                        .addComponent(btnCargar))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(cbCategoríaAllegación, javax.swing.GroupLayout.Alignment.LEADING, 0, 300, Short.MAX_VALUE)
+                            .addComponent(cbEntidadDenunciada, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(cbCargarReclamo, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(cbCargarReclamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton1)))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(34, 34, 34)
+                .addComponent(cbEntidadDenunciada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41)
+                .addComponent(cbCategoríaAllegación, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelarAlegacion)
                     .addComponent(btnCargar))
@@ -177,61 +219,91 @@ public class SNRCrearAlegation extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCategoriaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCategoriaActionPerformed
-
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
-    Allegation alle = new Allegation();
-    alle.setReason(txtMotivo.getText());
-    alle.setInformer(txtInformante.getText());
-    alle.setCategory((String) txtCategoria.getSelectedItem());
-    alle.setDenounced(txtDenunciado.getText());
-    alle.setSpecifications(txtEspecificaciones.getText());
-    controller.crearAlegacion(alle);
+        try {
+            Allegation alle = new Allegation();
 
-    JOptionPane.showMessageDialog(this, "La alegación fue cargada con éxito");
-    this.dispose();
-    SNRFrameAlegation framePrincipal = new SNRFrameAlegation();
-    framePrincipal.setVisible(true);
+            String claimSel = cbCargarReclamo.getSelectedItem().toString();
+            alle.setIdClaim(Integer.parseInt(claimSel.split(" - ")[0]));
+
+            String entidadSel = cbEntidadDenunciada.getSelectedItem().toString();
+            alle.setIdEntity(Integer.parseInt(entidadSel.split(" - ")[0]));
+
+            int categoriaId = cbCategoríaAllegación.getSelectedIndex() + 1;
+            alle.setIdCategory(categoriaId);
+
+            alle.setIdUser(3);
+            alle.setIdUserCreate(3);
+            alle.setIdUserUpdate(3);
+
+            if (controller.crearAlegacion(alle)) {
+                JOptionPane.showMessageDialog(this, "✅ La alegación fue cargada con éxito");
+                this.dispose();
+                new SNRFrameAlegation().setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "❌ Error al cargar la alegación");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "⚠️ Error inesperado: " + e.getMessage());
+        }
     }//GEN-LAST:event_btnCargarActionPerformed
 
     private void btnCancelarAlegacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarAlegacionActionPerformed
-        System.exit(0);
+        this.dispose();
+        new SNRFrameAlegation().setVisible(true);
     }//GEN-LAST:event_btnCancelarAlegacionActionPerformed
+
+    private void cbCargarReclamoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCargarReclamoActionPerformed
+        if (cbEntidadDenunciada.getSelectedItem() != null) {
+            System.out.println("Entidad seleccionada: " + cbEntidadDenunciada.getSelectedItem().toString());
+        }
+    }//GEN-LAST:event_cbCargarReclamoActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cbEntidadDenunciadaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbEntidadDenunciadaActionPerformed
+        cbEntidadDenunciada.removeAllItems();
+        for (String entidad : controller.listarEntidades()) {
+            cbEntidadDenunciada.addItem(entidad);
+        }
+    }//GEN-LAST:event_cbEntidadDenunciadaActionPerformed
+
+    private void cbCategoríaAllegaciónActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbCategoríaAllegaciónActionPerformed
+        if (cbCategoríaAllegación.getSelectedItem() != null) {
+            String categoria = cbCategoríaAllegación.getSelectedItem().toString();
+            System.out.println(categoria);
+        }
+    }//GEN-LAST:event_cbCategoríaAllegaciónActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelarAlegacion;
     private javax.swing.JButton btnCargar;
+    private javax.swing.JComboBox<String> cbCargarReclamo;
+    private javax.swing.JComboBox<String> cbCategoríaAllegación;
+    private javax.swing.JComboBox<String> cbEntidadDenunciada;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JComboBox<String> txtCategoria;
-    private javax.swing.JTextArea txtDenunciado;
-    private javax.swing.JTextArea txtEspecificaciones;
-    private javax.swing.JTextArea txtInformante;
-    private javax.swing.JTextArea txtMotivo;
+    private javax.swing.JTextArea txtAllegación;
     // End of variables declaration//GEN-END:variables
 }

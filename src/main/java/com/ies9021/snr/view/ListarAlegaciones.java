@@ -1,8 +1,7 @@
 package com.ies9021.snr.view;
 
-import com.ies9021.snr.Allegation;
+import com.ies9021.snr.dto.AllegationDTO;
 import com.ies9021.snr.controller.AllegationController;
-
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
@@ -12,29 +11,27 @@ public class ListarAlegaciones extends javax.swing.JFrame {
 
     public ListarAlegaciones(AllegationController controller) {
         this.controller = controller;
-        initComponents();   // bloque generado por NetBeans
-        cargarTabla();      // nuestra lógica fuera del bloque generado
+        initComponents(); // NO tocar
+        setLocationRelativeTo(null);
+        cargarTabla();
     }
 
-    // Método para cargar la tabla usando las variables generadas
     private void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) ListaAlegaciones.getModel();
-        modelo.setRowCount(0); // Limpiar tabla
+    DefaultTableModel modelo = (DefaultTableModel) ListaAlegaciones.getModel();
+    modelo.setRowCount(0); // limpiar tabla
 
-        List<Allegation> lista = controller.listarAlegaciones();
-        for (Allegation a : lista) {
-            modelo.addRow(new Object[]{
-                    a.getIdAllegation(),
-                    a.getReason(),
-                    a.getInformer(),
-                    a.getCategory(),
-                    a.getDenounced(),
-                    a.getSpecifications()
-            });
-        }
+    List<AllegationDTO> lista = controller.listarAlegacionesDTO();
+
+    for (AllegationDTO a : lista) {
+        modelo.addRow(new Object[]{
+            a.getIdAllegation(),     // ID
+            a.getClaimDescription(), // Reclamo
+            a.getDenouncedName(),    // Entidad denunciada
+            a.getCategoryName()      // Categoría
+        });
     }
-
-@SuppressWarnings("unchecked")
+}
+        @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -50,13 +47,13 @@ public class ListarAlegaciones extends javax.swing.JFrame {
         ListaAlegaciones.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         ListaAlegaciones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Motivo", "Informante", "Categoría", "Denunciado", "Especificaciones"
+                "ID", "Reclamo", "Entidad Denunciada", "Allegación", "Categoría"
             }
         ));
         jScrollPane1.setViewportView(ListaAlegaciones);
@@ -139,7 +136,7 @@ public class ListarAlegaciones extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarActionPerformed
-        System.exit(0);
+        dispose();
     }//GEN-LAST:event_btnCerrarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

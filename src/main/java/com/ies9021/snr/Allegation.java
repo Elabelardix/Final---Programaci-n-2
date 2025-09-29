@@ -2,183 +2,95 @@ package com.ies9021.snr;
 
 public class Allegation {
     private int idAllegation;
-    private String reason;
-    private String informer;
-    private String category;
-    private String denounced;
-    private String specifications;
     private int idUserCreate;
     private int idUserUpdate;
+    private String dateCreate;
+    private String dateUpdate;
     private int idCategory;
+    private int idUser;
     private int idEntity;
+    private int idClaim; // Relación con Claim
 
-    public Allegation() {
-    }
+    // **Nuevo atributo**
+    private String reason;
 
-    public Allegation(int idAllegation, String reason, String informer, String category,
-                      String denounced, String specifications,
-                      int idUserCreate, int idUserUpdate,
-                      int idCategory, int idEntity) {
+    // Constructor vacío
+    public Allegation() {}
+
+    // Constructor completo incluyendo reason
+    public Allegation(int idAllegation, int idUserCreate, int idUserUpdate,
+                      String dateCreate, String dateUpdate,
+                      int idCategory, int idUser, int idEntity, int idClaim,
+                      String reason) { // agregado
         this.idAllegation = idAllegation;
-        this.reason = reason;
-        this.informer = informer;
-        this.category = category;
-        this.denounced = denounced;
-        this.specifications = specifications;
         this.idUserCreate = idUserCreate;
         this.idUserUpdate = idUserUpdate;
+        this.dateCreate = dateCreate;
+        this.dateUpdate = dateUpdate;
         this.idCategory = idCategory;
+        this.idUser = idUser;
         this.idEntity = idEntity;
+        this.idClaim = idClaim;
+        this.reason = reason; // asignado
     }
 
-    public int getIdAllegation() {
-        return idAllegation;
-    }
+    // Getters y Setters
+    public int getIdAllegation() { return idAllegation; }
+    public void setIdAllegation(int idAllegation) { this.idAllegation = idAllegation; }
 
-    public void setIdAllegation(int idAllegation) {
-        this.idAllegation = idAllegation;
-    }
+    public int getIdUserCreate() { return idUserCreate; }
+    public void setIdUserCreate(int idUserCreate) { this.idUserCreate = idUserCreate; }
 
-    public String getReason() {
-        return reason;
-    }
+    public int getIdUserUpdate() { return idUserUpdate; }
+    public void setIdUserUpdate(int idUserUpdate) { this.idUserUpdate = idUserUpdate; }
 
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
+    public String getDateCreate() { return dateCreate; }
+    public void setDateCreate(String dateCreate) { this.dateCreate = dateCreate; }
 
-    public String getInformer() {
-        return informer;
-    }
+    public String getDateUpdate() { return dateUpdate; }
+    public void setDateUpdate(String dateUpdate) { this.dateUpdate = dateUpdate; }
 
-    public void setInformer(String informer) {
-        this.informer = informer;
-    }
+    public int getIdCategory() { return idCategory; }
+    public void setIdCategory(int idCategory) { this.idCategory = idCategory; }
 
-    public String getCategory() {
-        return category;
-    }
+    public int getIdUser() { return idUser; }
+    public void setIdUser(int idUser) { this.idUser = idUser; }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public int getIdEntity() { return idEntity; }
+    public void setIdEntity(int idEntity) { this.idEntity = idEntity; }
 
-    public String getDenounced() {
-        return denounced;
-    }
+    public int getIdClaim() { return idClaim; }
+    public void setIdClaim(int idClaim) { this.idClaim = idClaim; }
 
-    public void setDenounced(String denounced) {
-        this.denounced = denounced;
-    }
+    // **Getter y Setter del nuevo atributo**
+    public String getReason() { return reason; }
+    public void setReason(String reason) { this.reason = reason; }
 
-    public String getSpecifications() {
-        return specifications;
-    }
-
-    public void setSpecifications(String specifications) {
-        this.specifications = specifications;
-    }
-
-    public int getIdUserCreate() {
-        return idUserCreate;
-    }
-
-    public void setIdUserCreate(int idUserCreate) {
-        this.idUserCreate = idUserCreate;
-    }
-
-    public int getIdUserUpdate() {
-        return idUserUpdate;
-    }
-
-    public void setIdUserUpdate(int idUserUpdate) {
-        this.idUserUpdate = idUserUpdate;
-    }
-
-    public int getIdCategory() {
-        return idCategory;
-    }
-
-    public void setIdCategory(int idCategory) {
-        this.idCategory = idCategory;
-    }
-
-    public int getIdEntity() {
-        return idEntity;
-    }
-
-    public void setIdEntity(int idEntity) {
-        this.idEntity = idEntity;
-    }
-
-    public void updateReason(String newReason) {
-        if (newReason != null && !newReason.isEmpty()) {
-            this.reason = newReason;
-        }
-    }
-
-    public void updateSpecifications(String newSpecs) {
-        if (newSpecs != null && !newSpecs.isEmpty()) {
-            this.specifications = newSpecs;
-        }
-    }
-
-    public void updateDenounced(String newDenounced) {
-        if (newDenounced != null && !newDenounced.isEmpty()) {
-            this.denounced = newDenounced;
-        }
-    }
-
+    // Método resumen
     public void displaySummary() {
         System.out.println("Allegation ID: " + idAllegation);
-        System.out.println("Reason: " + reason);
-        System.out.println("Informer: " + informer);
-        System.out.println("Denounced: " + denounced);
-        System.out.println("Category: " + category);
+        System.out.println("Claim ID: " + idClaim);
         System.out.println("Entity ID: " + idEntity);
+        System.out.println("User ID: " + idUser);
+        System.out.println("Reason: " + reason); // mostrar reason
+        System.out.println("Created on: " + dateCreate);
+        System.out.println("Updated on: " + dateUpdate);
         System.out.println("-----------------------------");
-    }
-
-    public boolean isValid() {
-        return reason != null && !reason.isEmpty()
-            && informer != null && !informer.isEmpty()
-            && denounced != null && !denounced.isEmpty();
-    }
-
-    public void updateAll(String reason, String informer, String category,
-                          String denounced, String specifications,
-                          int idUserUpdate, int idCategory, int idEntity) {
-        updateReason(reason);
-        this.informer = informer;
-        this.category = category;
-        updateDenounced(denounced);
-        updateSpecifications(specifications);
-        this.idUserUpdate = idUserUpdate;
-        this.idCategory = idCategory;
-        this.idEntity = idEntity;
     }
 
     @Override
     public String toString() {
         return "Allegation{" +
                 "idAllegation=" + idAllegation +
-                ", reason='" + reason + '\'' +
-                ", informer='" + informer + '\'' +
-                ", category='" + category + '\'' +
-                ", denounced='" + denounced + '\'' +
-                ", specifications='" + specifications + '\'' +
                 ", idUserCreate=" + idUserCreate +
                 ", idUserUpdate=" + idUserUpdate +
+                ", dateCreate='" + dateCreate + '\'' +
+                ", dateUpdate='" + dateUpdate + '\'' +
                 ", idCategory=" + idCategory +
+                ", idUser=" + idUser +
                 ", idEntity=" + idEntity +
+                ", idClaim=" + idClaim +
+                ", reason='" + reason + '\'' + // agregado
                 '}';
-    }
-
-    public Object getDateCreate() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public Object getDateUpdate() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
