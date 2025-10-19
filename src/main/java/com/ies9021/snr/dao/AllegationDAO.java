@@ -1,143 +1,158 @@
 package com.ies9021.snr.dao;
 
 import com.ies9021.snr.Allegation;
-import com.ies9021.snr.dto.AllegationDTO;
-import com.ies9021.snr.config.DbConnection;
+import com.ies9021.snr.controller.AllegationController;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
 
 public class AllegationDAO {
 
-    // Crear una nueva alegación
-    public boolean crearAlegacion(Allegation a) {
-        String sql = "INSERT INTO allegation "
-                + "(id_user_create, id_user_update, id_category, id_user, id_entity, id_claim, date_create, date_update) "
-                + "VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
-        try (Connection conn = DbConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+    private Connection conn;
 
-            ps.setInt(1, a.getIdUserCreate());
-            ps.setInt(2, a.getIdUserUpdate());
-            ps.setInt(3, a.getIdCategory());
-            ps.setInt(4, a.getIdUser());
-            ps.setInt(5, a.getIdEntity());
-            ps.setInt(6, a.getIdClaim());
-
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public AllegationDAO(Connection conn) {
+        this.conn = conn;
     }
 
-    // Listar todas las alegaciones (entidad Allegation)
-    public List<Allegation> listarAlegaciones() {
-        List<Allegation> lista = new ArrayList<>();
+    public void createAllegation(int idUserCreate, int idEntity, int idClaim,
+            int idCategory, String description, String proofUrl) throws SQLException {
+
+        Allegation a = new Allegation();
+        a.setIdUserCreate(idUserCreate);
+        a.setIdUserUpdate(idUserCreate);
+        a.setIdUser(idUserCreate);
+        a.setDateCreate(LocalDateTime.now());
+        a.setDateUpdate(LocalDateTime.now());
+        a.setIdEntity(idEntity);
+        a.setIdClaim(idClaim);
+        a.setIdCategory(idCategory);
+        a.setDescription(description);
+        a.setStatus("Pendiente");
+        a.setProofUrl(proofUrl != null ? proofUrl.trim() : null);
+
+        create(a);
+    }
+
+    public void create(Allegation a) throws SQLException {
+        String sql = "INSERT INTO allegation (id_user_create, id_user_update, date_create, date_update, "
+                + "id_category, id_user, id_entity, id_claim, description, status, proof_url) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, a.getIdUserCreate());
+        ps.setInt(2, a.getIdUserUpdate());
+        ps.setTimestamp(3, Timestamp.valueOf(a.getDateCreate()));
+        ps.setTimestamp(4, Timestamp.valueOf(a.getDateUpdate()));
+        ps.setInt(5, a.getIdCategory());
+        ps.setInt(6, a.getIdUser());
+        ps.setInt(7, a.getIdEntity());
+        ps.setInt(8, a.getIdClaim());
+        ps.setString(9, a.getDescription());
+        ps.setString(10, a.getStatus());
+        ps.setString(11, a.getProofUrl());
+        ps.executeUpdate();
+    }
+
+    public List<Allegation> readAll() throws SQLException {
+        List<Allegation> list = new ArrayList<>();
         String sql = "SELECT * FROM allegation";
-        try (Connection conn = DbConnection.getConnection(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-                Allegation a = new Allegation();
-                a.setIdAllegation(rs.getInt("id_allegation"));
-                a.setIdUserCreate(rs.getInt("id_user_create"));
-                a.setIdUserUpdate(rs.getInt("id_user_update"));
-                a.setDateCreate(rs.getString("date_create"));
-                a.setDateUpdate(rs.getString("date_update"));
-                a.setIdCategory(rs.getInt("id_category"));
-                a.setIdUser(rs.getInt("id_user"));
-                a.setIdEntity(rs.getInt("id_entity"));
-                a.setIdClaim(rs.getInt("id_claim"));
-                lista.add(a);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+        while (rs.next()) {
+            Allegation a = new Allegation(
+                    rs.getInt("id_allegation"),
+                    rs.getInt("id_user_create"),
+                    rs.getInt("id_user_update"),
+                    rs.getTimestamp("date_create").toLocalDateTime(),
+                    rs.getTimestamp("date_update").toLocalDateTime(),
+                    rs.getInt("id_category"),
+                    rs.getInt("id_user"),
+                    rs.getInt("id_entity"),
+                    rs.getInt("id_claim"),
+                    rs.getString("description"),
+                    rs.getString("status"),
+                    rs.getString("proof_url") // 🔹 proof_url
+            );
+            list.add(a);
         }
-        return lista;
+        return list;
     }
 
-    // Listar alegaciones como DTO (4 campos)
-    public List<AllegationDTO> listarAlegacionesDTO() {
-        List<AllegationDTO> lista = new ArrayList<>();
-        String sql = "SELECT "
-                + "a.id_allegation, "
-                + "c.description AS claimDescription, "
-                + "e.entity_name AS denouncedName, "
-                + "cat.type_category AS categoryName "
-                + "FROM allegation a "
-                + "JOIN claim c ON a.id_claim = c.id_claim "
-                + "JOIN entity e ON a.id_entity = e.id_entity "
-                + "JOIN category cat ON a.id_category = cat.id_category";
-
-        try (Connection conn = DbConnection.getConnection(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-                AllegationDTO dto = new AllegationDTO(
-                        rs.getInt("id_allegation"),
-                        rs.getString("claimDescription"),
-                        rs.getString("denouncedName"),
-                        rs.getString("categoryName")
-                );
-                lista.add(dto);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public Allegation readById(int id) throws SQLException {
+        String sql = "SELECT * FROM allegation WHERE id_allegation=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return new Allegation(
+                    rs.getInt("id_allegation"),
+                    rs.getInt("id_user_create"),
+                    rs.getInt("id_user_update"),
+                    rs.getTimestamp("date_create").toLocalDateTime(),
+                    rs.getTimestamp("date_update").toLocalDateTime(),
+                    rs.getInt("id_category"),
+                    rs.getInt("id_user"),
+                    rs.getInt("id_entity"),
+                    rs.getInt("id_claim"),
+                    rs.getString("description"),
+                    rs.getString("status"),
+                    rs.getString("proof_url") // 🔹 proof_url
+            );
         }
-        return lista;
+        return null;
     }
 
-    // Listar entidades para combo box
-    public List<String> listarEntidades() {
-        List<String> entidades = new ArrayList<>();
-        String sql = "SELECT id_entity, entity_name FROM entity";
-
-        try (Connection conn = DbConnection.getConnection(); Statement st = conn.createStatement(); ResultSet rs = st.executeQuery(sql)) {
-
-            while (rs.next()) {
-                int id = rs.getInt("id_entity");
-                String nombre = rs.getString("entity_name");
-                entidades.add(id + " - " + nombre); // ComboBox
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return entidades;
+    public void update(Allegation a) throws SQLException {
+        String sql = "UPDATE allegation SET id_user_update=?, date_update=?, id_category=?, id_user=?, "
+                + "id_entity=?, id_claim=?, description=?, status=?, proof_url=? WHERE id_allegation=?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, a.getIdUserUpdate());
+        ps.setTimestamp(2, Timestamp.valueOf(a.getDateUpdate()));
+        ps.setInt(3, a.getIdCategory());
+        ps.setInt(4, a.getIdUser());
+        ps.setInt(5, a.getIdEntity());
+        ps.setInt(6, a.getIdClaim());
+        ps.setString(7, a.getDescription());
+        ps.setString(8, a.getStatus());
+        ps.setString(9, a.getProofUrl()); // 🔹 proof_url
+        ps.setInt(10, a.getIdAllegation());
+        ps.executeUpdate();
     }
 
-    // Actualizar una alegación
-    public boolean actualizarAlegacion(Allegation a) {
-        String sql = "UPDATE allegation SET id_user_update=?, id_category=?, id_user=?, id_entity=?, id_claim=?, date_update=NOW() "
-                + "WHERE id_allegation=?";
-        try (Connection conn = DbConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, a.getIdUserUpdate());
-            ps.setInt(2, a.getIdCategory());
-            ps.setInt(3, a.getIdUser());
-            ps.setInt(4, a.getIdEntity());
-            ps.setInt(5, a.getIdClaim());
-            ps.setInt(6, a.getIdAllegation());
-
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Eliminar una alegación
-    public boolean eliminarAlegacion(int id) {
+    public void delete(int id) throws SQLException {
         String sql = "DELETE FROM allegation WHERE id_allegation=?";
-        try (Connection conn = DbConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+        ps.executeUpdate();
+    }
 
-            ps.setInt(1, id);
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+    public List<AllegationController.EntityItem> readAllEntities() throws SQLException {
+        List<AllegationController.EntityItem> entities = new ArrayList<>();
+        String sql = "SELECT id_entity, entity_name FROM entity"; // tabla de entidades
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+        while (rs.next()) {
+            entities.add(new AllegationController.EntityItem(
+                    rs.getInt("id_entity"),
+                    rs.getString("entity_name")
+            ));
         }
+        return entities;
+    }
+
+    public List<AllegationController.ClaimItem> readAllClaims() throws SQLException {
+        List<AllegationController.ClaimItem> claims = new ArrayList<>();
+        String sql = "SELECT id_claim, title FROM claim";
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+        while (rs.next()) {
+            claims.add(new AllegationController.ClaimItem(
+                    rs.getInt("id_claim"),
+                    rs.getString("title")
+            ));
+        }
+        return claims;
     }
 }

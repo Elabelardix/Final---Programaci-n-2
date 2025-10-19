@@ -1,27 +1,31 @@
 package com.ies9021.snr;
 
+import java.time.LocalDateTime;
+
 public class Allegation {
+
     private int idAllegation;
     private int idUserCreate;
     private int idUserUpdate;
-    private String dateCreate;
-    private String dateUpdate;
+    private LocalDateTime dateCreate;
+    private LocalDateTime dateUpdate;
     private int idCategory;
     private int idUser;
     private int idEntity;
-    private int idClaim; // Relación con Claim
-
-    // **Nuevo atributo**
-    private String reason;
+    private int idClaim;
+    private String description;
+    private String status;
+    private String proofUrl; // 🔹 NUEVO: URL de prueba
 
     // Constructor vacío
-    public Allegation() {}
+    public Allegation() {
+    }
 
-    // Constructor completo incluyendo reason
+    // Constructor completo
     public Allegation(int idAllegation, int idUserCreate, int idUserUpdate,
-                      String dateCreate, String dateUpdate,
+                      LocalDateTime dateCreate, LocalDateTime dateUpdate,
                       int idCategory, int idUser, int idEntity, int idClaim,
-                      String reason) { // agregado
+                      String description, String status, String proofUrl) { // 🔹 proofUrl agregado
         this.idAllegation = idAllegation;
         this.idUserCreate = idUserCreate;
         this.idUserUpdate = idUserUpdate;
@@ -31,7 +35,9 @@ public class Allegation {
         this.idUser = idUser;
         this.idEntity = idEntity;
         this.idClaim = idClaim;
-        this.reason = reason; // asignado
+        this.description = description;
+        this.status = status;
+        this.proofUrl = proofUrl; // 🔹 asignar
     }
 
     // Getters y Setters
@@ -44,11 +50,11 @@ public class Allegation {
     public int getIdUserUpdate() { return idUserUpdate; }
     public void setIdUserUpdate(int idUserUpdate) { this.idUserUpdate = idUserUpdate; }
 
-    public String getDateCreate() { return dateCreate; }
-    public void setDateCreate(String dateCreate) { this.dateCreate = dateCreate; }
+    public LocalDateTime getDateCreate() { return dateCreate; }
+    public void setDateCreate(LocalDateTime dateCreate) { this.dateCreate = dateCreate; }
 
-    public String getDateUpdate() { return dateUpdate; }
-    public void setDateUpdate(String dateUpdate) { this.dateUpdate = dateUpdate; }
+    public LocalDateTime getDateUpdate() { return dateUpdate; }
+    public void setDateUpdate(LocalDateTime dateUpdate) { this.dateUpdate = dateUpdate; }
 
     public int getIdCategory() { return idCategory; }
     public void setIdCategory(int idCategory) { this.idCategory = idCategory; }
@@ -62,21 +68,14 @@ public class Allegation {
     public int getIdClaim() { return idClaim; }
     public void setIdClaim(int idClaim) { this.idClaim = idClaim; }
 
-    // **Getter y Setter del nuevo atributo**
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    // Método resumen
-    public void displaySummary() {
-        System.out.println("Allegation ID: " + idAllegation);
-        System.out.println("Claim ID: " + idClaim);
-        System.out.println("Entity ID: " + idEntity);
-        System.out.println("User ID: " + idUser);
-        System.out.println("Reason: " + reason); // mostrar reason
-        System.out.println("Created on: " + dateCreate);
-        System.out.println("Updated on: " + dateUpdate);
-        System.out.println("-----------------------------");
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getProofUrl() { return proofUrl; } // 🔹 getter
+    public void setProofUrl(String proofUrl) { this.proofUrl = proofUrl; } // 🔹 setter
 
     @Override
     public String toString() {
@@ -84,13 +83,15 @@ public class Allegation {
                 "idAllegation=" + idAllegation +
                 ", idUserCreate=" + idUserCreate +
                 ", idUserUpdate=" + idUserUpdate +
-                ", dateCreate='" + dateCreate + '\'' +
-                ", dateUpdate='" + dateUpdate + '\'' +
+                ", dateCreate=" + dateCreate +
+                ", dateUpdate=" + dateUpdate +
                 ", idCategory=" + idCategory +
                 ", idUser=" + idUser +
                 ", idEntity=" + idEntity +
                 ", idClaim=" + idClaim +
-                ", reason='" + reason + '\'' + // agregado
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", proofUrl='" + proofUrl + '\'' + // 🔹 mostrar en toString
                 '}';
     }
 }

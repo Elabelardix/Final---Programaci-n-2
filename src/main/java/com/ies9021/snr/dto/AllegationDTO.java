@@ -1,22 +1,24 @@
 package com.ies9021.snr.dto;
 
 public class AllegationDTO {
-
     private int idAllegation;
-    private String claimDescription;
-    private String denouncedName;
-    private String categoryName;
+    private String entidad;
+    private String reclamo;
+    private String description;
+    private String status;
 
-    public AllegationDTO(int idAllegation, String claimDescription, String denouncedName,
-                         String categoryName) {
+    public AllegationDTO(int idAllegation, String entidad, String reclamo, String description, String status) {
         this.idAllegation = idAllegation;
-        this.claimDescription = claimDescription;
-        this.denouncedName = denouncedName;
-        this.categoryName = categoryName;
+        this.entidad = entidad;
+        this.reclamo = reclamo;
+        this.description = description;
+        this.status = status;
     }
 
+    // Getters y setters
     public int getIdAllegation() { return idAllegation; }
-    public String getClaimDescription() { return claimDescription; }
-    public String getDenouncedName() { return denouncedName; }
-    public String getCategoryName() { return categoryName; }
+    public String getEntidad() { return entidad; }
+    public String getReclamo() { return reclamo; }
+    public String getDescription() { return description; }
+    public String getStatus() { return status; }
 }
