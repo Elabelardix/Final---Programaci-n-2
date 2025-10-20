@@ -19,7 +19,7 @@ public class Menu extends JFrame {
 
     public Menu(AllegationController controller) {
         this.controller = controller;
-        initComponents(); // ✅ Debe ir antes que cualquier llamada a componentes
+        initComponents();
         setLocationRelativeTo(null);
         cargarFiltroEntidades();
         refrescarTabla();
@@ -51,12 +51,13 @@ public class Menu extends JFrame {
             for (Allegation a : lista) {
                 model.addRow(new Object[]{
                     a.getIdAllegation(),
+                    a.getIdUser(),
                     mapaEntidades.getOrDefault(a.getIdEntity(), "Entidad " + a.getIdEntity()),
                     mapaClaims.getOrDefault(a.getIdClaim(), "Reclamo " + a.getIdClaim()),
                     a.getDescription(),
                     a.getDateCreate().format(df),
                     a.getDateCreate().format(tf),
-                    a.getProofUrl(), // 🔹 mostrar la URL de prueba
+                    a.getProofUrl(),
                     a.getStatus()
                 });
             }
@@ -113,6 +114,7 @@ public class Menu extends JFrame {
                 if (selected.equals("Todas") || entidadNombre.equals(selected)) {
                     model.addRow(new Object[]{
                         a.getIdAllegation(),
+                        a.getIdUser(),
                         entidadNombre,
                         mapaClaims.getOrDefault(a.getIdClaim(), "Reclamo " + a.getIdClaim()),
                         a.getDescription(),
@@ -170,13 +172,13 @@ public class Menu extends JFrame {
 
         tbListaAlegaciones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Entidad Alegando", "Reclamo Pendiente", "Alegación", "Fecha", "Hora", "Prueba URL", "Estado"
+                "ID", "ID_usuario", "Entidad Alegando", "Reclamo Pendiente", "Alegación", "Fecha", "Hora", "Prueba URL", "Estado"
             }
         ));
         jScrollPane1.setViewportView(tbListaAlegaciones);
@@ -238,35 +240,33 @@ public class Menu extends JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(btnCrearAlegación, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
-                                .addComponent(btnEditarAlegación, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(76, 76, 76)
-                                .addComponent(btnBorrarAlegacion, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(cbFiltroEntidades, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnRefrescarTabla, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jLabel1)
-                                .addGap(126, 126, 126)
-                                .addComponent(btnCerrarAplicación, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(20, 20, 20))))
+                                .addGap(189, 189, 189)
+                                .addComponent(btnCerrarAplicación, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnCrearAlegación, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
+                                .addComponent(btnEditarAlegación, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(112, 112, 112)
+                                .addComponent(btnBorrarAlegacion, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(cbFiltroEntidades, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnRefrescarTabla, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(16, 16, 16)
-                        .addComponent(btnCerrarAplicación)))
-                .addGap(33, 33, 33)
+                        .addComponent(btnCerrarAplicación))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCrearAlegación, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEditarAlegación, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -320,8 +320,16 @@ public class Menu extends JFrame {
             int id = (int) tbListaAlegaciones.getValueAt(fila, 0);
             try {
                 Allegation a = controller.getAllegationById(id);
+                IniciarSesion1 login = new IniciarSesion1(controller, a);
+                login.setVisible(true);
+
+                UserAllegation usuarioLogueado = login.getUsuarioLogueado();
+                if (usuarioLogueado == null) {
+                    JOptionPane.showMessageDialog(this, "Debes iniciar sesión para crear una alegación.");
+                    return;
+                }
                 if (a != null) {
-                    CreaAlegacion editar = new CreaAlegacion(controller, a); // 🟩 usar constructor coherente
+                    CreaAlegacion editar = new CreaAlegacion(controller, a);
                     editar.setVisible(true);
                 }
             } catch (Exception e) {
@@ -365,7 +373,7 @@ public class Menu extends JFrame {
         );
 
         if (confirm != JOptionPane.YES_OPTION) {
-            return; 
+            return;
         }
 
         try {

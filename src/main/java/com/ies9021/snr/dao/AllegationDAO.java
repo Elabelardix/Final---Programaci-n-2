@@ -73,7 +73,7 @@ public class AllegationDAO {
                     rs.getInt("id_claim"),
                     rs.getString("description"),
                     rs.getString("status"),
-                    rs.getString("proof_url") // 🔹 proof_url
+                    rs.getString("proof_url")
             );
             list.add(a);
         }
@@ -98,7 +98,7 @@ public class AllegationDAO {
                     rs.getInt("id_claim"),
                     rs.getString("description"),
                     rs.getString("status"),
-                    rs.getString("proof_url") // 🔹 proof_url
+                    rs.getString("proof_url")
             );
         }
         return null;
@@ -116,7 +116,7 @@ public class AllegationDAO {
         ps.setInt(6, a.getIdClaim());
         ps.setString(7, a.getDescription());
         ps.setString(8, a.getStatus());
-        ps.setString(9, a.getProofUrl()); // 🔹 proof_url
+        ps.setString(9, a.getProofUrl());
         ps.setInt(10, a.getIdAllegation());
         ps.executeUpdate();
     }
@@ -130,7 +130,7 @@ public class AllegationDAO {
 
     public List<AllegationController.EntityItem> readAllEntities() throws SQLException {
         List<AllegationController.EntityItem> entities = new ArrayList<>();
-        String sql = "SELECT id_entity, entity_name FROM entity"; // tabla de entidades
+        String sql = "SELECT id_entity, entity_name FROM entity";
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(sql);
         while (rs.next()) {

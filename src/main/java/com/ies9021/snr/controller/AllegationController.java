@@ -38,16 +38,19 @@ public class AllegationController {
     }
 
     public void updateAllegation(int idAllegation, int idUserUpdate,
+            int idEntity, int idClaim,
             String description, String status, String proofUrl) throws SQLException {
 
         Allegation a = dao.readById(idAllegation);
 
         if (a != null) {
             a.setIdUserUpdate(idUserUpdate);
+            a.setIdEntity(idEntity);
+            a.setIdClaim(idClaim);
             a.setDateUpdate(LocalDateTime.now());
             a.setDescription(description);
             a.setStatus(status);
-            a.setProofUrl(proofUrl); // 🔹 asignamos la URL
+            a.setProofUrl(proofUrl);
             dao.update(a);
         } else {
             System.err.println("No se encontró la alegación con ID: " + idAllegation);
@@ -84,7 +87,6 @@ public class AllegationController {
         return dao.readById(id);
     }
 
-    // 🔹 Clases internas para ComboBox
     public static class EntityItem {
 
         private int id;
@@ -123,12 +125,10 @@ public class AllegationController {
         }
     }
 
-    // 🔹 Traer todas las entidades
     public List<EntityItem> getAllEntityItems() throws SQLException {
         return dao.readAllEntities();
     }
 
-    // 🔹 NUEVO: Traer todos los reclamos
     public List<ClaimItem> getAllClaimItems() throws SQLException {
         return dao.readAllClaims();
     }
